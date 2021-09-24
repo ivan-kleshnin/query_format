@@ -327,10 +327,10 @@ Naive versions like `@` or `$` will fail shortly:
 }
 ```
 
-Check [Specials](https://en.wikipedia.org/wiki/Specials_(Unicode_block)) document on **Wikipedia.org** first.
+Check the [Specials_(Unicode_block)](https://en.wikipedia.org/wiki/Specials_(Unicode_block)) page on **Wikipedia** first.
 
-**Unicode.org** has a detailed review of values you may try as [sentinels](http://www.unicode.org/faq/private_use.html#sentinels)
-None of them is perfect but `\uFFFF` seems good enough unless some legacy clients will use your API.
+**Unicode.org** has a detailed review of values you may try as [sentinels](http://www.unicode.org/faq/private_use.html#sentinels).
+None of which is perfect but `\uFFFF` seems good enough unless some legacy clients will use your API.
 It's officially suggested to be used as sentinel in Unicode 4.0. It's a [non-character](http://www.unicode.org/faq/private_use.html)
 and should not appear in blobs(!), let alone human texts.
 
