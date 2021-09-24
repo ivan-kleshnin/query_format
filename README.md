@@ -1,7 +1,45 @@
-# query_format
+# Query Format
 
-This document describes the JSON format that can be used to query REST APIs.
-The document is stuctured as a guide + Q&A.
+**WIP** This document describes a JSON format convention to implement and query REST APIs.
+It can also be used in GraphQL APIs, but, for the sake of brevity, this part is omitted for now.
+
+## Quick Example
+
+#### JS code
+
+```js
+// or ["SEARCH", _] if it's supported in your environment
+fetchAPI(["POST", "/api/your-collection?search"], {
+  whereAnd: formatWhere([
+    {eq: [field("location"), "UK"]}
+    {notEq: [field("location"), "London, UK"]},
+    {between: [field("salary"), [3000, 5000]]}
+  ])
+})
+```
+
+#### JSON result
+
+```json
+-> POST /api/your-collection?search
+{
+  "whereAnd": [
+    {"eq": ["☆location", "UK"]}
+    {"not_eq": ["☆location", "London, UK"]},
+    {"between": ["☆salary", [3000, 5000]]}
+  ]
+}
+
+<- 200 OK
+...
+```
+
+Where `☆` marks the table/collection field and is used exclusively for the purpose of documentation.
+It's not the real characted suggested in the format. More of that later.
+
+
+
+## Guide
 
 ### 1. Request: Top Level
 
