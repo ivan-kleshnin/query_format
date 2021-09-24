@@ -18,7 +18,7 @@ fetchAPI(["POST", "/api/your-collection?search"], {
 })
 ```
 
-#### JSON result
+#### HTTP request
 
 ```json
 -> POST /api/your-collection?search
