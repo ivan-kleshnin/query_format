@@ -21,7 +21,7 @@ fetchAPI(["POST", "/api/your-collection?search"], {
 #### HTTP request
 
 ```json
--> POST /api/your-collection?search
+// -> POST /api/your-collection?search
 {
   "whereAnd": [
     {"eq": ["☆location", "UK"]}
@@ -30,7 +30,7 @@ fetchAPI(["POST", "/api/your-collection?search"], {
   ]
 }
 
-<- 200 OK
+// <- 200 OK
 ...
 ```
 
