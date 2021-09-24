@@ -269,7 +269,7 @@ being necessary to escape) it still seems easier to escape fields instead of val
 }
 ```
 
-– where `field` is the escaping function we don't know how to write yet.
+Where `field` is the escaping function we don't know how to write yet.
 
 Unicode.org has a detailed review of values you may try as [sentinels](http://www.unicode.org/faq/private_use.html#sentinels)
 None of them is perfect but `\uFFFF` seems good enough unless you're dealing with UTF-8 <-> UTF-16 and legacy code.
@@ -284,4 +284,4 @@ function field(str : string) : string {
 }
 ```
 
-Now on BE you just `fieldOrValue.startsWith("\uFFFF") ? _fieldName_ : _stringValue`
+Now on BE you just `fieldOrValue.startsWith("\uFFFF") ? _fieldName_ : _stringValue_`
