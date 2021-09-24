@@ -405,8 +405,10 @@ and `snakifyKeys` is:
 ```ts
 import {pipe, fromCamelCase, fromSnakeCase, toCamelCase, toSnakeCase, convertData} from "kecasn"
 
-const snakifyStr = pipe(fromCamelCase, toSnakeCase)  // Until JS natively supports `|>` pipeline operator
-const camelizeStr = pipe(fromSnakeCase, toCamelCase) // ...
+const snakifyStr = pipe(fromCamelCase, toSnakeCase)
+const camelizeStr = pipe(fromSnakeCase, toCamelCase)
 
 const snakifyKeys = convertData(snakifyStr, {keys: true})
 ```
+
+Using [kecasn](https://github.com/ivan-kleshnin/kecasn) case conversion library as one of many tools that do the job.
