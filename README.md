@@ -277,6 +277,8 @@ Naive versions like `@` or `$` will fail shortly:
   whereAnd: [
     {eq: ["@location", "UK")]},
     {not_eq: ["@location"), "@location2"]},
+    // then "suddenly"
+    {eq: ["@twitter", "@ivan_kleshnin")]}, // @_@ fiasco
   ]
 }
 ```
