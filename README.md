@@ -342,7 +342,14 @@ Now on BE you just `fieldOrValue.startsWith("\uFFFF") ? _fieldName_ : _stringVal
 
 ### 5. snake_case vs camelCase
 
-// Or if your API requires snake_cased fields:
+Some APIs expect and return object data in snake_case instead of camelCase following the conventions of
+their languages (Python, Rust, etc). One option is to use snake_case directly in your code but it's prone
+to expand beyond the fetching layer and "contaminate" forms, etc. with unconventional names.
+
+It's trivial to add a layer of convertion between the data
+and the fetching code:
+
+```ts
 fetchAPI(["POST", "/api/your-collection?search"], {
   whereAnd: formatWhere([
     {eq: [field("location"), "UK"]}
@@ -350,6 +357,48 @@ fetchAPI(["POST", "/api/your-collection?search"], {
     {between: [field("salary"), [3000, 5000]]}
   ])
 })
+```
 
-// `formatWhere` won't be described here (for now)
-// another option it so use snake_case directly
+where `formatWhere` is
+
+```ts
+export const formatWhere = (where : Where = []) : Where => {
+  return snakifyKeys(where) as Where
+}
+
+export type Where = WhereItem[]
+
+export type WhereItem = Dict<Cond>
+
+export type Cond = BooleanCond | NumberCond | StringCond
+
+export type BooleanCond =
+  | {eq : boolean}
+  | {ne : boolean}
+
+export type NumberCond =
+  | {eq : number}
+  | {ne : number}
+  | {gt : number}
+  | {gte : number}
+  | {lt : number}
+  | {lte : number}
+
+export type StringCond =
+  | {eq : string}
+  | {ne : string}
+  | {gt : string}
+  | {like : string}
+  | {ilike : string}
+```
+
+and `snakifyKeys` is:
+
+```ts
+import {pipe, fromCamelCase, fromSnakeCase, toCamelCase, toSnakeCase, convertData} from "kecasn"
+
+export const snakifyStr = pipe(fromCamelCase, toSnakeCase)  // Until JS natively supports `|>` pipeline operator
+export const camelizeStr = pipe(fromSnakeCase, toCamelCase) // ...
+
+export const snakifyKeys = convertData(snakifyStr, {keys: true})
+```
