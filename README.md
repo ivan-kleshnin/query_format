@@ -3,6 +3,12 @@
 **WIP** This document describes a JSON format convention to implement and query REST APIs.
 It can also be used in GraphQL APIs, but, for the sake of brevity, this part is omitted for now.
 
+#### Note
+ 
+CamelCase vs snake_case in fields is largely irrelevant for the purpose of the document (discussed below).
+Exact command names like `eq vs equals vs =` are largely irrelevant for the purpose of the document (TODO explain).
+Both points are closer to implementation details of the format and might be added to this spec later.
+
 ## Quick Example
 
 #### JS code
@@ -10,24 +16,12 @@ It can also be used in GraphQL APIs, but, for the sake of brevity, this part is 
 ```js
 // or ["SEARCH", "/api/your-collection"] if this new verb is supported in your environment
 fetchAPI(["POST", "/api/your-collection?search"], {
-  whereAnd: formatWhere([
+  whereAnd: [
     {eq: [field("location"), "UK"]}
     {notEq: [field("location"), "London, UK"]},
     {between: [field("salary"), [3000, 5000]]}
-  ])
+  ],
 })
-
-// Or if your API requires snake_cased fields:
-fetchAPI(["POST", "/api/your-collection?search"], {
-  whereAnd: formatWhere([
-    {eq: [field("location"), "UK"]}
-    {notEq: [field("location"), "London, UK"]},
-    {between: [field("salary"), [3000, 5000]]}
-  ])
-})
-
-// `formatWhere` won't be described here (for now)
-// another option it so use snake_case directly
 ```
 
 #### HTTP request
@@ -37,7 +31,7 @@ fetchAPI(["POST", "/api/your-collection?search"], {
 {
   "whereAnd": [
     {"eq": ["☆location", "UK"]}
-    {"not_eq": ["☆location", "London, UK"]},
+    {"notEq": ["☆location", "London, UK"]},
     {"between": ["☆salary", [3000, 5000]]}
   ]
 }
@@ -47,9 +41,7 @@ fetchAPI(["POST", "/api/your-collection?search"], {
 ```
 
 Where `☆` marks the table/collection field and is used exclusively for the purpose of documentation.
-It's not the real characted suggested in the format. More of that later.
-
-
+It's not the real characted suggested in the format. More on that below.
 
 ## Guide
 
@@ -241,7 +233,7 @@ whereAnd: [
   {unary: [foo]},
   {binary: [foo, bar]},
   {ternary: [foo, bar, baz]},
-  {n_ary: [foo, bar, baz, ...]},
+  {nAry: [foo, bar, baz, ...]},
 ]
 ```
 
@@ -259,7 +251,7 @@ The whole "readability" argument of field-first approach fails shortly for that 
 // QUERY
 whereAnd: [
   {location: {eq: "UK"}},
-  {location: {not_eq: "London, UK"}},
+  {location: {notEq: "London, UK"}},
   {location: {eq: "...?..."}},       
 ]
 ```
@@ -278,8 +270,8 @@ there are several workaround like using sentinel values:
 // QUERY
 whereAnd: [
   {eq: ["@location", "UK"]},
-  {not_eq: ["@location", "London, UK"]}, // or {not: [ {eq: ["@location", "London, UK"]} ]}
-  {not_eq: ["@location", "@location2"]},       
+  {notEq: ["@location", "London, UK"]}, // or {not: [ {eq: ["@location", "London, UK"]} ]}
+  {notEq: ["@location", "@location2"]},       
 ]
 ```
 
@@ -291,8 +283,8 @@ In Mongo we mark commands with `$` so one more possiblity is like:
 // QUERY
 whereAnd: [
   {$eq: [{$field: "location"}, "UK"]},             // "location" = 'UK'
-  {$not_eq: [{$field: "location"}, "London, UK"]}, // "location" != 'London, UK'
-  {$not_eq: [{$field: "location"}, "location2"]},  // "location" != "location2"      
+  {$notEq: [{$field: "location"}, "London, UK"]}, // "location" != 'London, UK'
+  {$notEq: [{$field: "location"}, "location2"]},  // "location" != "location2"      
 ]
 ```
 
@@ -314,7 +306,7 @@ being necessary to escape) it still seems more straightforward to escape fields 
 {
   whereAnd: [
     {eq: [field("location"), "UK")]},
-    {not_eq: [field("location"), field("location2")]},
+    {notEq: [field("location"), field("location2")]},
   ]
 }
 ```
@@ -326,7 +318,7 @@ Naive versions like `@` or `$` will fail shortly:
 {
   whereAnd: [
     {eq: ["@location", "UK")]},
-    {not_eq: ["@location"), "@location2"]},
+    {notEq: ["@location"), "@location2"]},
     // then "suddenly"
     {eq: ["@twitter", "@ivankleshnin")]}, // @_@ fiasco: the second one was meant to be a value, not a field
   ]
@@ -347,3 +339,17 @@ function field(str : string) : string {
 ```
 
 Now on BE you just `fieldOrValue.startsWith("\uFFFF") ? _fieldName_ : _stringValue_`
+
+### 5. snake_case vs camelCase
+
+// Or if your API requires snake_cased fields:
+fetchAPI(["POST", "/api/your-collection?search"], {
+  whereAnd: formatWhere([
+    {eq: [field("location"), "UK"]}
+    {notEq: [field("location"), "London, UK"]},
+    {between: [field("salary"), [3000, 5000]]}
+  ])
+})
+
+// `formatWhere` won't be described here (for now)
+// another option it so use snake_case directly
