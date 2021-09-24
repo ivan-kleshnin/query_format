@@ -288,9 +288,12 @@ whereAnd: [
 ]
 ```
 
-Generally speakin, this version relies on the fact that you control object keys much better than string values (on average).
-Most objects in code come from the code itself unlike string values and you can ensure (by convention) that your data keys don't start with your
-sentinel character. Regardless, it's significantly more noisy than the previous, at least in my opinion. More control characters, more nesting.
+Generally speaking, this version relies on the fact that you control object keys much better than string values, at least on average.
+Most objects in the code come from the code itself unlike string values. Some objects originate from DB but you'll
+rarely have to deal with end-user constructed datastructures. It's possible to ensure by convention that your data keys 
+don't start with sentinels. You can't expect the same guarantees from string values which come from everywhere and can take whatever shapes.
+
+Regardless, it's significantly more noisy than the previous approach, at least in my opinion. More control characters, more nesting.
 
 ### 4. How to Escape: fields vs values
 
