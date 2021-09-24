@@ -352,9 +352,7 @@ and the fetching code:
 ```ts
 fetchAPI(["POST", "/api/your-collection?search"], {
   whereAnd: formatWhere([
-    {eq: [field("location"), "UK"]}
     {notEq: [field("location"), "London, UK"]},
-    {between: [field("salary"), [3000, 5000]]}
   ])
 })
 ```
@@ -364,9 +362,7 @@ to create a JSON in expected format:
 ```json
 {
   "whereAnd": [
-    ...
-    {"not_eq": ["☆location", "London, UK"]},
-    ...
+    {"not_eq": ["☆location", "London, UK"]}
   ]
 }
 ```
