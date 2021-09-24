@@ -273,7 +273,7 @@ being necessary to escape) it still seems easier to escape fields instead of val
 
 Unicode.org has a detailed review of values you may try as [sentinels](http://www.unicode.org/faq/private_use.html#sentinels)
 None of them is perfect but `\uFFFF` seems good enough unless you're dealing with UTF-8 <-> UTF-16 and legacy code.
-It's officially suggested as a goold sentinel value in Unicode 4.0. It's a [non-character](http://www.unicode.org/faq/private_use.html)
+It's officially suggested to be used as sentinel in Unicode 4.0. It's a [non-character](http://www.unicode.org/faq/private_use.html)
 and should not appear in blobs, let alone human texts.
 
 So `field` can be implemented like:
