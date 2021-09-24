@@ -254,11 +254,11 @@ String values may contain almost any sequence of bytes (especially if consider b
 and field names are (or can be) naturally limited to alphanumerics and underscores by convention.
 
 Given that, it's much easier to escape and unescape values than fields. In the first case we just prepend or append 
-any character _that the field can not start_ with to our values. In the second case we can't do the same for fields
-as values _can_ start with that character (and we need to apply some string transformation to BOTH to make them recognizable).
+any character _that the field can not start_ with to our string values. In the second case we can't do the same for fields
+as a valid value _could_ start with that character (we need to apply some string transformation to BOTH to make them recognizable).
 
 Considering that there're much more potential values than fields in code (think of objects being values with each string value
-being necessary to escape) it still seems easier to escape fields instead of values. 
+being necessary to escape) it still seems more straightforward to escape fields instead of values. 
 
 ```ts
 {
@@ -269,9 +269,19 @@ being necessary to escape) it still seems easier to escape fields instead of val
 }
 ```
 
-Where `field` is the escaping function we don't know how to write yet.
+Where `field` is the escaping function. But is it possible to select a sentinel value which wouldn't collide with strings.
+Naive versions like `@` or `$` will fail shortly:
 
-Unicode.org has a detailed review of values you may try as [sentinels](http://www.unicode.org/faq/private_use.html#sentinels)
+```ts
+{
+  whereAnd: [
+    {eq: ["@location", "UK")]},
+    {not_eq: ["@location"), "@location2"]},
+  ]
+}
+```
+
+**Unicode.org** has a detailed review of values you may try as [sentinels](http://www.unicode.org/faq/private_use.html#sentinels)
 None of them is perfect but `\uFFFF` seems good enough unless you're dealing with UTF-8 <-> UTF-16 and legacy code.
 It's officially suggested to be used as sentinel in Unicode 4.0. It's a [non-character](http://www.unicode.org/faq/private_use.html)
 and should not appear in blobs, let alone human texts.
