@@ -45,6 +45,9 @@ It's not the real characted suggested in the format. More on that below.
 
 ## Guide
 
+Like the name suggest, this page describes and explains the structure of `whereAnd / whereOr` query objects.
+Implementation of `fetchAPI` and other helpers are out of the current scope.
+
 ### 1. Request: Top Level
 
 ```ts
