@@ -194,3 +194,57 @@ whereAnd: [
   {n_ary: [foo, bar, baz, ...]},
 ]
 ```
+
+3. **Rich Semantics**
+
+For now we imagined `field OP value` cases exclusively. But there are `field1 OP field2` and even more complex cases involving multiple fields and values.
+The whole "readability" argument of field-first approach fails shortly for that as we have to mark **values**
+
+```
+SQL
+  WHERE location = "UK"
+  AND   location != "London, UK"
+  AND   location != location2
+
+QUERY
+  whereAnd: [
+    {location: {eq: "UK"}},
+    {location: {not_eq: "London, UK"}},
+    {location: {eq: "...?..."}},       
+  ]
+```
+
+We can try `{location: {eq: "@location2"}}` but it's inconsistent with the first `location` having no extra characters.
+
+With command-first approach, if we don't want to rely on the order of fields/value (and we don't)
+there are several workaround from which marking fields with extra chars like `@` seems the easiest:
+
+```
+PG-SQL
+  WHERE "location" = 'UK'          -- field1 OP value1 
+  AND   "location" != 'London, UK' -- field1 OP value2
+  AND   "location" != "location2"  -- field1 OP field2
+
+QUERY
+  whereAnd: [
+    {eq: ["@location", "UK"]},
+    {not_eq: ["@location", "London, UK"]}, -- or {not: [ {eq: ["@location", "London, UK"]} ]}
+    {not_eq: ["@location", "@location2"]},       
+  ]
+```
+
+In which case string values have to be escaped like `{eq: ["@twitter", "\@ivan_kleshnin"]}` which seems not to be difficult
+both to encode (on FE) and decode (on BE). In PG we differ values and fields by the quote type which doesn't translate well to JSON.
+
+In Mongo we mark commands with `$` so one more possiblity is like:
+
+```
+QUERY
+  whereAnd: [
+    {$eq: [{$field: "location"}, "UK"]},             -- "location" = 'UK'
+    {$not_eq: [{$field: "location"}, "London, UK"]}, -- "location" != 'London, UK'
+    {$not_eq: [{$field: "location"}, "location2"]},  -- "location" != "location2"      
+  ]
+```
+
+But it's significantly more noisy than the previous, at least in my opinion. More control characters, more nesting.
