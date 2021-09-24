@@ -154,7 +154,7 @@ Command-first is consistent with nested `and`, `or`, `not` (and top level `where
 ```ts
 whereAnd: [
   {foo: {eq: bar}}, 
-  {not: [               // not/and/or use a different order
+  {not: [              // not/and/or use a different order
     {foo: {eq: bar2}}, // than eq and it's unavoidable
   ]} 
 ]
@@ -163,7 +163,7 @@ whereAnd: [
 
 whereAnd: [
   {eq: [foo, bar]},
-  {not: [               // all commands follow 
+  {not: [              // all commands follow 
     {eq: [foo, bar2]}, // the same structure
   ]}
 ]
