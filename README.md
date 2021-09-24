@@ -359,7 +359,19 @@ fetchAPI(["POST", "/api/your-collection?search"], {
 })
 ```
 
-where `formatWhere` is
+to create a JSON in expected format:
+
+```json
+{
+  "whereAnd": [
+    ...
+    {"not_eq": ["☆location", "London, UK"]},
+    ...
+  ]
+}
+```
+
+In the above example `formatWhere` can be implemented like (TypeScript):
 
 ```ts
 export const formatWhere = (where : Where = []) : Where => {
