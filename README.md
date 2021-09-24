@@ -350,6 +350,12 @@ function field(str : string) : string {
 
 Now on Backend you just `fieldOrValue.startsWith("\uFFFF") ? _fieldName_ : _stringValue_`.
 
+TODO verify in:
+
+- JS (utf16) <-> JSON (utf8) <-> Python (utf8)
+- JS (utf16) <-> JSON (utf8) <-> JS (utf16)
+- and possibly other cross-platform, cross-UTF exchanges...
+
 ### 5. snake_case vs camelCase
 
 Some APIs expect and return object data in snake_case instead of camelCase following the conventions of
