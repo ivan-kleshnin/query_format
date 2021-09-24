@@ -16,6 +16,18 @@ fetchAPI(["POST", "/api/your-collection?search"], {
     {between: [field("salary"), [3000, 5000]]}
   ])
 })
+
+// Or if your API requires snake_cased fields:
+fetchAPI(["POST", "/api/your-collection?search"], {
+  whereAnd: formatWhere([
+    {eq: [field("location"), "UK"]}
+    {notEq: [field("location"), "London, UK"]},
+    {between: [field("salary"), [3000, 5000]]}
+  ])
+})
+
+// `formatWhere` won't be described here (for now)
+// another option it so use snake_case directly
 ```
 
 #### HTTP request
