@@ -370,21 +370,21 @@ to create a JSON in expected format:
 In the above example `formatWhere` can be implemented like (TypeScript):
 
 ```ts
-export const formatWhere = (where : Where = []) : Where => {
+const formatWhere = (where : Where = []) : Where => {
   return snakifyKeys(where) as Where
 }
 
-export type Where = WhereItem[]
+type Where = WhereItem[]
 
-export type WhereItem = Dict<Cond>
+type WhereItem = Record<string, Cond>
 
-export type Cond = BooleanCond | NumberCond | StringCond
+type Cond = BooleanCond | NumberCond | StringCond
 
-export type BooleanCond =
+type BooleanCond =
   | {eq : boolean}
   | {ne : boolean}
 
-export type NumberCond =
+type NumberCond =
   | {eq : number}
   | {ne : number}
   | {gt : number}
@@ -392,7 +392,7 @@ export type NumberCond =
   | {lt : number}
   | {lte : number}
 
-export type StringCond =
+type StringCond =
   | {eq : string}
   | {ne : string}
   | {gt : string}
@@ -405,8 +405,8 @@ and `snakifyKeys` is:
 ```ts
 import {pipe, fromCamelCase, fromSnakeCase, toCamelCase, toSnakeCase, convertData} from "kecasn"
 
-export const snakifyStr = pipe(fromCamelCase, toSnakeCase)  // Until JS natively supports `|>` pipeline operator
-export const camelizeStr = pipe(fromSnakeCase, toCamelCase) // ...
+const snakifyStr = pipe(fromCamelCase, toSnakeCase)  // Until JS natively supports `|>` pipeline operator
+const camelizeStr = pipe(fromSnakeCase, toCamelCase) // ...
 
-export const snakifyKeys = convertData(snakifyStr, {keys: true})
+const snakifyKeys = convertData(snakifyStr, {keys: true})
 ```
