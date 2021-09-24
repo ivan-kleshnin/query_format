@@ -46,48 +46,39 @@ It's not the real characted suggested in the format. More on that below.
 Using TypeScript here to convey the idea.
 
 ```ts
-// REMINDER
-// const where = [
-//  {eq: [field(location), "UK"]}
-//  {not_eq: [field(location), "UK"]}
-//  // same as
-//  {not: [
-//    {eq: }
-//  ]}
-//]
+const where : Where = [
+  {eq: [field(location), "UK"]}     // : WhereItem
+  {not_eq: [field(location), "UK"]} // : WhereItem
+]
+```
 
-type Request = {...} & ( // pagination, sorting, etc. aspects are not shown but belong here
+```ts
+type Request = {...} & ( // pagination, sorting, etc. aspects are skipped but belong here
   | {whereAnd : Where} 
   | {whereOr : Where}  
 )  
 
-type Where = WhereItem[]
+type Where = Filter[]
 
-type WhereItem = Record<string, Cond>
-
-type Cond = BooleanCond | NumberCond | StringCond
-
-type BooleanCond =
-  | {eq : boolean}
-  | {ne : boolean}
-
-type NumberCond =
-  | {eq : number}
-  | {ne : number}
-  | {gt : number}
-  | {gte : number}
-  | {lt : number}
-  | {lte : number}
-
-type StringCond =
-  | {eq : string}
-  | {ne : string}
-  | {gt : string}
-  | {like : string}
-  | {ilike : string}
+type Filter = 
+  | {eq: any[]}     // simplified for the 1-st approx.
+  | {not_eq: any[]} // simplified for the 1-st approx.
+  
+  | {gt: any[]}      // simplified for the 1-st approx.
+  | {gte: any[]}     // simplified for the 1-st approx.
+  | {lt: any[]}      // simplified for the 1-st approx.
+  | {lte: any[]}     // simplified for the 1-st approx.  
+  | {between: any[]} // simplified for the 1-st approx.  
+  
+  | {and: Filter} 
+  | {or: Filter} 
+  | {not: Filter}
+  
+  | {like: any[]}  // simplified for the 1-st approx.
+  | {ilike: any[]} // simplified for the 1-st approx.
 ```
 
-```
+^ the above part is not finished yet.
 
 ## Guide
 
