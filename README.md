@@ -425,32 +425,7 @@ In the above example `formatWhere` can be implemented like (TypeScript):
 ```ts
 const formatWhere = (where : Where = []) : Where => {
   return snakifyKeys(where) as Where
-}
-
-type Where = WhereItem[]
-
-type WhereItem = Record<string, Cond>
-
-type Cond = BooleanCond | NumberCond | StringCond
-
-type BooleanCond =
-  | {eq : boolean}
-  | {ne : boolean}
-
-type NumberCond =
-  | {eq : number}
-  | {ne : number}
-  | {gt : number}
-  | {gte : number}
-  | {lt : number}
-  | {lte : number}
-
-type StringCond =
-  | {eq : string}
-  | {ne : string}
-  | {gt : string}
-  | {like : string}
-  | {ilike : string}
+} // check Where definition above
 ```
 
 and `snakifyKeys` is:
