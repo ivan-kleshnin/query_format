@@ -217,7 +217,7 @@ QUERY
 We can try `{location: {eq: "@location2"}}` but it's inconsistent with the first `location` having no extra characters.
 
 With command-first approach, if we don't want to rely on the order of fields/value (and we don't)
-there are several workaround from which marking fields with extra chars like `@` seems the easiest:
+there are several workaround like using sentinel values:
 
 ```
 PG-SQL
@@ -233,8 +233,7 @@ QUERY
   ]
 ```
 
-In which case string values have to be escaped like `{eq: ["@twitter", "\@ivan_kleshnin"]}` which seems not to be difficult
-both to encode (on FE) and decode (on BE). In PG we differ values and fields by the quote type which doesn't translate well to JSON.
+In PG we differ values and fields by the quote type which doesn't translate well to JSON.
 
 In Mongo we mark commands with `$` so one more possiblity is like:
 
@@ -248,3 +247,41 @@ QUERY
 ```
 
 But it's significantly more noisy than the previous, at least in my opinion. More control characters, more nesting.
+
+### 4. How to Escape: fields vs values
+
+String values may contain almost any sequence of bytes (especially if consider binary data)
+and field names are (or can be) naturally limited to alphanumerics and underscores by convention.
+
+Given that, it's much easier to escape and unescape values than fields. In the first case we just prepend or append 
+any character _that the field can not start_ with to our values. In the second case we can't do the same for fields
+as values _can_ start with that character (and we need to apply some string transformation to BOTH to make them recognizable).
+
+Considering that there're much more potential values than fields in code (think of objects being values with each string value
+being necessary to escape) it still seems easier to escape fields instead of values. 
+
+```
+{
+  whereAnd: [
+    {eq: [field("location", "UK")]},
+    {not_eq: [field("location", field("location2")]},
+  ]
+}
+```
+
+– where `field` is the escaping function we don't know how to write yet.
+
+Unicode.org has a detailed review of values you may try as [sentinels](http://www.unicode.org/faq/private_use.html#sentinels)
+None of them is perfect but `\uFFFF` seems good enough unless you're dealing with UTF-8 <-> UTF-16 and legacy code.
+It's officially suggested as a goold sentinel value in Unicode 4.0. It's a [non-character](http://www.unicode.org/faq/private_use.html)
+and should not appear in blobs, let alone human texts.
+
+So `field` can be implemented like:
+
+```
+function field(str : string) : string {
+  return "\uFFFF" + str
+}
+```
+
+Now on BE you just `fieldOrValue.startsWith("\uFFFF") ? _fieldName_ : _stringValue`
