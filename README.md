@@ -288,7 +288,9 @@ whereAnd: [
 ]
 ```
 
-But it's significantly more noisy than the previous, at least in my opinion. More control characters, more nesting.
+Generally speakin, this version relies on the fact that you control object keys much better than string values (on average).
+Most objects in code come from the code itself unlike string values and you can ensure (by convention) that your data keys don't start with your
+sentinel character. Regardless, it's significantly more noisy than the previous, at least in my opinion. More control characters, more nesting.
 
 ### 4. How to Escape: fields vs values
 
@@ -325,10 +327,12 @@ Naive versions like `@` or `$` will fail shortly:
 }
 ```
 
+Check [Specials](https://en.wikipedia.org/wiki/Specials_(Unicode_block)) document on **Wikipedia.org** first.
+
 **Unicode.org** has a detailed review of values you may try as [sentinels](http://www.unicode.org/faq/private_use.html#sentinels)
-None of them is perfect but `\uFFFF` seems good enough unless you're dealing with UTF-8 <-> UTF-16 and legacy code.
+None of them is perfect but `\uFFFF` seems good enough unless some legacy clients will use your API.
 It's officially suggested to be used as sentinel in Unicode 4.0. It's a [non-character](http://www.unicode.org/faq/private_use.html)
-and should not appear in blobs, let alone human texts.
+and should not appear in blobs(!), let alone human texts.
 
 So `field` can be implemented like:
 
@@ -338,7 +342,7 @@ function field(str : string) : string {
 }
 ```
 
-Now on BE you just `fieldOrValue.startsWith("\uFFFF") ? _fieldName_ : _stringValue_`
+Now on Backend you just `fieldOrValue.startsWith("\uFFFF") ? _fieldName_ : _stringValue_`.
 
 ### 5. snake_case vs camelCase
 
