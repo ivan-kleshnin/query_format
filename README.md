@@ -3,11 +3,9 @@
 **WIP** This document describes a JSON format convention to implement and query REST APIs.
 It can also be used in GraphQL APIs, but, for the sake of brevity, this part is omitted for now.
 
-#### Note
- 
-CamelCase vs snake_case in fields is largely irrelevant for the purpose of the document (discussed below).
-Exact command names like `eq vs equals vs =` are largely irrelevant for the purpose of the document (TODO explain).
-Both points are closer to implementation details of the format and might be added to this spec later.
+The document provides a high-level overview of the format and is agnostic to exact command names like `eq vs equals vs =`
+or other implementation details like CamelCase vs snake_case. The content is applicable regardless of your term/case/... preferences.
+Such topics are partially touched below and might be elaborated later.
 
 ## Quick Example
 
@@ -42,6 +40,54 @@ fetchAPI(["POST", "/api/your-collection?search"], {
 
 Where `☆` marks the table/collection field and is used exclusively for the purpose of documentation.
 It's not the real characted suggested in the format. More on that below.
+
+## Types
+
+Using TypeScript here to convey the idea.
+
+```ts
+// REMINDER
+// const where = [
+//  {eq: [field(location), "UK"]}
+//  {not_eq: [field(location), "UK"]}
+//  // same as
+//  {not: [
+//    {eq: }
+//  ]}
+//]
+
+type Request = {...} & ( // pagination, sorting, etc. aspects are not shown but belong here
+  | {whereAnd : Where} 
+  | {whereOr : Where}  
+)  
+
+type Where = WhereItem[]
+
+type WhereItem = Record<string, Cond>
+
+type Cond = BooleanCond | NumberCond | StringCond
+
+type BooleanCond =
+  | {eq : boolean}
+  | {ne : boolean}
+
+type NumberCond =
+  | {eq : number}
+  | {ne : number}
+  | {gt : number}
+  | {gte : number}
+  | {lt : number}
+  | {lte : number}
+
+type StringCond =
+  | {eq : string}
+  | {ne : string}
+  | {gt : string}
+  | {like : string}
+  | {ilike : string}
+```
+
+```
 
 ## Guide
 
