@@ -5,11 +5,11 @@ The document is stuctured as a guide + Q&A.
 
 ### 1. Request: Top Level
 
-```
+```ts
 {
-  whereAnd: ...
-  xor
-  whereOr: ...
+  whereAnd: _,
+  // x(or)
+  whereOr: _,
 }
 ```
 
@@ -26,13 +26,13 @@ Sending both should result in a `400` error.
 
 ### 2. Where Structure
 
-```
+```ts
 {
-  whereAnd: [...]  
+  whereAnd: [_] 
 }
-same for
+// same for
 {
-  whereOr: [...]
+  whereOr: [_]
 }
 ```
 
@@ -40,7 +40,7 @@ same for
 
 Like
 
-```
+```ts
 {
   whereAnd: { 
     term1: value1,
@@ -51,36 +51,36 @@ Like
 
 **A:** because whatever `term1` is (field name, command name) it should support repetitions
 
-```
+```ts
 {
   whereAnd: { 
     fieldname: value1,
-    __fieldname__: value2, ! key duplication !
+    __fieldname__: value2, // key duplication!
   }  
 }
 
 {
   whereOr: { 
     commandX: value1,
-    __commandX__: value2, ! key duplication !
+    __commandX__: value2, // key duplication!
   }  
 }
 ```
 
 An array naturally allows duplication:
 
-```
+```ts
 {
   whereAnd: [ 
     {fieldname: value1},
-    {fieldname: value2} ! fine to repeat !
+    {fieldname: value2} // ok to repeat!
   ]
 }
 
 {
   whereOr: [
     {commandX: value1},
-    {commandX: value2}, ! fine to repeat !
+    {commandX: value2}, // ok to repeat!
   ]
 }
 ```
@@ -93,14 +93,14 @@ There are two "obvious" ways to structure commands:
 
 #### 1. Field-First
 
-```
+```ts
 {
   whereAnd: [ 
     {fieldname: {op1: value1}},
     {fieldname: {op2: value2}},
   ]
   
-  _or_
+  // or
   
   whereAnd: [ 
     {fieldname: [op1, value1]},
@@ -111,14 +111,14 @@ There are two "obvious" ways to structure commands:
 
 #### 2. Command-First
 
-```
+```ts
 {
   whereAnd: [ 
     {op1: {fieldname: value1}},
     {op2: {fieldname: value2}},
   ]
   
-  _or_
+  // or
   
   whereAnd: [ 
     {op1: [fieldname, value1]},
@@ -133,15 +133,15 @@ Command first is a superior alternative.
 
 **A:** field-first is arguably more _naturally_ readable in some cases
 
-```
+```ts
 whereAnd: [ 
-  {foo: {eq: bar} -- FOO eq BAR
+  {foo: {eq: bar} // FOO eq BAR
 ]
 
-_vs_
+// vs
 
 whereAnd: [ 
-  {eq: [foo, bar] -- eq(FOO, BAR)
+  {eq: [foo, bar] // eq(FOO, BAR)
 ]
 ```
 
@@ -151,20 +151,20 @@ Command-first is LISP-like and requires some time to get used to. But it's objec
 
 Command-first is consistent with nested `and`, `or`, `not` (and top level `whereAnd`, `whereOr` which follow command-first approach!).
 
-```
+```ts
 whereAnd: [
   {foo: {eq: bar}}, 
-  not: [               -- not/and/or use a different order
-    {foo: {eq: bar2}}, -- than eq and it's unavoidable
+  not: [               // not/and/or use a different order
+    {foo: {eq: bar2}}, // than eq and it's unavoidable
   ] 
 ]
 
-_vs_
+// vs
 
 whereAnd: [
   {eq: [foo, bar]},
-  not: [               -- all commands follow 
-    {eq: [foo, bar2]}, -- the same structure
+  not: [               // all commands follow 
+    {eq: [foo, bar2]}, // the same structure
   ] 
 ]
 ```
@@ -176,17 +176,17 @@ of ternary – a conditional operator (they became synonymous though they natura
 
 The same translates to JSON format. There seems to be no seamless way to express unary, ternary and commands with more arity with the field-first approach:
 
-```
+```ts
 whereAnd: [
-  {foo: {eq: V},                      -- binary, ok
-  {foo: exists}                       -- exists is a command? or a value?
-  {foo: {cond: {then: V1, else: V2}}} -- @_@ a mess
+  {foo: {eq: V},                       // binary, ok
+  {foo: exists},                       // exists is a command? or a value?
+  {foo: {cond: {then: V1, else: V2}}}, // @_@ a mess
 ]
 ```
 
 Unlike the command-first approach where everything is fine:
 
-```
+```ts
 whereAnd: [
   {unary: [foo]},
   {binary: [foo, bar]},
@@ -200,18 +200,18 @@ whereAnd: [
 For now we imagined `field OP value` cases exclusively. But there are `field1 OP field2` and even more complex cases involving multiple fields and values.
 The whole "readability" argument of field-first approach fails shortly for that as we have to mark **values**
 
-```
-SQL
-  WHERE location = "UK"
-  AND   location != "London, UK"
-  AND   location != location2
+```ts
+// SQL
+// WHERE location = "UK"
+// AND   location != "London, UK"
+// AND   location != location2
 
-QUERY
-  whereAnd: [
-    {location: {eq: "UK"}},
-    {location: {not_eq: "London, UK"}},
-    {location: {eq: "...?..."}},       
-  ]
+// QUERY
+whereAnd: [
+  {location: {eq: "UK"}},
+  {location: {not_eq: "London, UK"}},
+  {location: {eq: "...?..."}},       
+]
 ```
 
 We can try `{location: {eq: "@location2"}}` but it's inconsistent with the first `location` having no extra characters.
@@ -219,31 +219,31 @@ We can try `{location: {eq: "@location2"}}` but it's inconsistent with the first
 With command-first approach, if we don't want to rely on the order of fields/value (and we don't)
 there are several workaround like using sentinel values:
 
-```
-PG-SQL
-  WHERE "location" = 'UK'          -- field1 OP value1 
-  AND   "location" != 'London, UK' -- field1 OP value2
-  AND   "location" != "location2"  -- field1 OP field2
+```ts
+// PG-SQL
+// WHERE "location" = 'UK'          -- field1 OP value1 
+// AND   "location" != 'London, UK' -- field1 OP value2
+// AND   "location" != "location2"  -- field1 OP field2
 
-QUERY
-  whereAnd: [
-    {eq: ["@location", "UK"]},
-    {not_eq: ["@location", "London, UK"]}, -- or {not: [ {eq: ["@location", "London, UK"]} ]}
-    {not_eq: ["@location", "@location2"]},       
-  ]
+// QUERY
+whereAnd: [
+  {eq: ["@location", "UK"]},
+  {not_eq: ["@location", "London, UK"]}, // or {not: [ {eq: ["@location", "London, UK"]} ]}
+  {not_eq: ["@location", "@location2"]},       
+]
 ```
 
 In PG we differ values and fields by the quote type which doesn't translate well to JSON.
 
 In Mongo we mark commands with `$` so one more possiblity is like:
 
-```
-QUERY
-  whereAnd: [
-    {$eq: [{$field: "location"}, "UK"]},             -- "location" = 'UK'
-    {$not_eq: [{$field: "location"}, "London, UK"]}, -- "location" != 'London, UK'
-    {$not_eq: [{$field: "location"}, "location2"]},  -- "location" != "location2"      
-  ]
+```ts
+// QUERY
+whereAnd: [
+  {$eq: [{$field: "location"}, "UK"]},             // "location" = 'UK'
+  {$not_eq: [{$field: "location"}, "London, UK"]}, // "location" != 'London, UK'
+  {$not_eq: [{$field: "location"}, "location2"]},  // "location" != "location2"      
+]
 ```
 
 But it's significantly more noisy than the previous, at least in my opinion. More control characters, more nesting.
@@ -260,7 +260,7 @@ as values _can_ start with that character (and we need to apply some string tran
 Considering that there're much more potential values than fields in code (think of objects being values with each string value
 being necessary to escape) it still seems easier to escape fields instead of values. 
 
-```
+```ts
 {
   whereAnd: [
     {eq: [field("location", "UK")]},
@@ -278,7 +278,7 @@ and should not appear in blobs, let alone human texts.
 
 So `field` can be implemented like:
 
-```
+```ts
 function field(str : string) : string {
   return "\uFFFF" + str
 }
