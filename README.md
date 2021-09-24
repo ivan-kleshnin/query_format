@@ -8,7 +8,7 @@ It can also be used in GraphQL APIs, but, for the sake of brevity, this part is 
 #### JS code
 
 ```js
-// or ["SEARCH", _] if it's supported in your environment
+// or ["SEARCH", "/api/your-collection"] if this new verb is supported in your environment
 fetchAPI(["POST", "/api/your-collection?search"], {
   whereAnd: formatWhere([
     {eq: [field("location"), "UK"]}
