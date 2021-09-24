@@ -278,7 +278,7 @@ Naive versions like `@` or `$` will fail shortly:
     {eq: ["@location", "UK")]},
     {not_eq: ["@location"), "@location2"]},
     // then "suddenly"
-    {eq: ["@twitter", "@ivan_kleshnin")]}, // @_@ fiasco
+    {eq: ["@twitter", "@ivankleshnin")]}, // @_@ fiasco: the second one was meant to be a value, not a field
   ]
 }
 ```
