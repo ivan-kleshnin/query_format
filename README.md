@@ -263,8 +263,8 @@ being necessary to escape) it still seems easier to escape fields instead of val
 ```ts
 {
   whereAnd: [
-    {eq: [field("location", "UK")]},
-    {not_eq: [field("location", field("location2")]},
+    {eq: [field("location"), "UK")]},
+    {not_eq: [field("location"), field("location2")]},
   ]
 }
 ```
