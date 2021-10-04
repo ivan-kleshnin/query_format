@@ -58,24 +58,69 @@ type Request = {...} & ( // pagination, sorting, etc. aspects are skipped but be
   | {whereOr : Where}  
 )  
 
-type Where = Filter[]
+export type Where = Condition[]
 
-type Filter = 
-  | {eq: any[]}     // simplified for the 1-st approx.
-  | {not_eq: any[]} // simplified for the 1-st approx.
-  
-  | {gt: any[]}      // simplified for the 1-st approx.
-  | {gte: any[]}     // simplified for the 1-st approx.
-  | {lt: any[]}      // simplified for the 1-st approx.
-  | {lte: any[]}     // simplified for the 1-st approx.  
-  | {between: any[]} // simplified for the 1-st approx.  
-  
-  | {and: Filter} 
-  | {or: Filter} 
-  | {not: Filter}
-  
-  | {like: any[]}  // simplified for the 1-st approx.
-  | {ilike: any[]} // simplified for the 1-st approx.
+export type Condition =
+  | EqCondition
+  | NotEqCondition
+  | GtCondition
+  | LtCondition
+  | GteCondition
+  | LteCondition
+  | RangeCondition
+  | SearchCondition
+  | NotCondition
+  | OrCondition
+  | AndCondition
+
+type Comparable = number | string | boolean
+type Sortable = number | string | boolean
+
+type Field = string // TODO research "nominal type" approximations in TS
+
+type EqCondition = {
+  eq : [Field, Comparable] | [Field, Field]
+}
+
+type NotEqCondition = {
+  notEq : [Field, Comparable] | [Field, Field]
+}
+
+type GtCondition = {
+  gt : [Field, Sortable] | [Field, Field]
+}
+
+type LtCondition = {
+  lt : [Field, Sortable] | [Field, Field]
+}
+
+type GteCondition = {
+  gte : [Field, Sortable] | [Field, Field]
+}
+
+type LteCondition = {
+  lte : [Field, Sortable] | [Field, Field]
+}
+
+type RangeCondition = {
+  range : [Field, [number, number]] // simplified for now
+}
+
+type SearchCondition = {
+  search : [string]
+}
+
+type NotCondition = {
+  not : Condition[]
+}
+
+type OrCondition = {
+  or : Condition[]
+}
+
+type AndCondition = {
+  and : Condition[]
+}
 ```
 
 ^ the above part is not finished yet.
