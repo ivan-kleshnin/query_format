@@ -7,8 +7,8 @@ The document provides a high-level overview of the format and is agnostic to exa
 or other implementation details like CamelCase vs snake_case. The content is applicable regardless of your term/case/... preferences.
 Such topics are partially touched below and might be elaborated later.
 
-**Main benefits of having a fixed schema:**
-  - stop reinventing naming conventions per endpoint
+**Main benefits of having a flexible fixed schema:**
+  - no need to (re)invent names and formats for each endpoint
   - potential for code generation / code autoresolving (based exclusively on endpoint schemas)
 
 ## Quick Example
