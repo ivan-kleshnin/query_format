@@ -48,7 +48,7 @@ Using TypeScript here to convey the idea.
 ```ts
 const where : Where = [
   {eq: [field(location), "UK"]}     // : WhereItem
-  {not_eq: [field(location), "UK"]} // : WhereItem
+  {notEq: [field(location), "UK"]} // : WhereItem
 ]
 ```
 
@@ -458,7 +458,7 @@ to create a JSON in expected format:
 ```json
 {
   "whereAnd": [
-    {"not_eq": ["☆location", "London, UK"]}
+    {"notEq": ["☆location", "London, UK"]}
   ]
 }
 ```
