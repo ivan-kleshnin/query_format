@@ -1,11 +1,15 @@
 # Query Format
 
-**WIP** This document describes a JSON format convention to implement and query REST APIs.
+**WIP** This document describes a JSON format/schema convention to implement and query REST APIs.
 It can also be used in GraphQL APIs, but, for the sake of brevity, this part is omitted for now.
 
 The document provides a high-level overview of the format and is agnostic to exact command names like `eq vs equals vs =`
 or other implementation details like CamelCase vs snake_case. The content is applicable regardless of your term/case/... preferences.
 Such topics are partially touched below and might be elaborated later.
+
+**Main benefits of having a fixed schema:**
+  – stop reinventing naming conventions per endpoint
+  - potential for code generation / code autoresolving (based exclusively on endpoint schemas)
 
 ## Quick Example
 
