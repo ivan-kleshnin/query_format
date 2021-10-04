@@ -123,6 +123,30 @@ type AndCondition = {
 }
 ```
 
+On BE you'll setup more precise types on per-endpoint basis:
+
+```
+// ENDPOINT SPECIFIC
+
+type EqCondition = {
+  eq : ["☆location", Comparable] 
+     | ["☆location", "☆location"] 
+     | ["☆profile_status", Comparable]}
+     // ...all fields for which 'eq' operation is defined
+}
+
+type NotEqCondition = {
+  not_eq : ["☆location", Comparable] 
+         | ["☆location", "☆location"] 
+         | ["☆profile_status", Comparable]}
+         // ...all fields for which 'not_eq' operation is defined     
+}
+
+// ...all supported commands (unique per endpoint)
+```
+
+^ using TS syntax. 
+
 ## Guide
 
 Like the name suggest, this page describes and explains the structure of `whereAnd / whereOr` query objects.
