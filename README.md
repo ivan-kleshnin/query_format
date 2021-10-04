@@ -125,21 +125,23 @@ type AndCondition = {
 
 On BE you'll setup more precise types on per-endpoint basis:
 
-```
+```ts
 // ENDPOINT SPECIFIC
 
 type EqCondition = {
-  eq : ["☆location", Comparable] 
-     | ["☆location", "☆location"] 
-     | ["☆profile_status", Comparable]}
-     // ...all fields for which 'eq' operation is defined
+  eq : 
+    | ["☆location", Comparable] 
+    | ["☆location", "☆location"] 
+    | ["☆profile_status", Comparable]}
+    // ...all supported arguments for 'eq' condition
 }
 
 type NotEqCondition = {
-  not_eq : ["☆location", Comparable] 
-         | ["☆location", "☆location"] 
-         | ["☆profile_status", Comparable]}
-         // ...all fields for which 'not_eq' operation is defined     
+  not_eq : 
+    | ["☆location", Comparable] 
+    | ["☆location", "☆location"] 
+    | ["☆profile_status", Comparable]}
+    // ...all supported arguments for 'not_eq' condition
 }
 
 // ...all supported commands (unique per endpoint)
