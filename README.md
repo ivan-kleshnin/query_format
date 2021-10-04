@@ -123,8 +123,6 @@ type AndCondition = {
 }
 ```
 
-^ the above part is not finished yet.
-
 ## Guide
 
 Like the name suggest, this page describes and explains the structure of `whereAnd / whereOr` query objects.
