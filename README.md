@@ -8,7 +8,7 @@ or other implementation details like CamelCase vs snake_case. The content is app
 Such topics are partially touched below and might be elaborated later.
 
 **Main benefits of having a fixed schema:**
-  – stop reinventing naming conventions per endpoint
+  - stop reinventing naming conventions per endpoint
   - potential for code generation / code autoresolving (based exclusively on endpoint schemas)
 
 ## Quick Example
