@@ -151,7 +151,7 @@ type NotEqCondition = {
 // ...all supported commands (unique per endpoint)
 ```
 
-^ just and idea. The above will be declared using syntax of your API/validation BE framework/library or with imperative commands. 
+^ The above will be declared using syntax of your API/validation BE framework/library or with imperative commands. 
 The concepts of "tuples" and "literal vaues" must be supported.
 
 ## Guide
